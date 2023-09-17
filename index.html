@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- Need meta viewport tag to allow for css media queries on moblie -->
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>React Import External JSON file</title>
+    <!-- local css -->
+    <style>
+      ol {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        color: blue;;
+      }
+      a {
+        text-decoration: none;
+      }
+      a:visited {
+        color:black;
+        
+      }
+      a:hover {
+        text-decoration:underline;
+      }
+      li {
+			display: inline-block;
+      padding: 20px;
+      text-decoration: none;
+		}
+    </style>
+      <!-- load jquery to use for external json loading -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- load React - note when deploying, replace "development.js" with "production.min.js". -->
+  <script src="https://unpkg.com/react/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom/umd/react-dom.development.js" crossorigin>
+  </script>  
+  <!-- load babel transpiler to convert React's JSX markup to pure JavaScript
+       Note: we only need babel loaded in the browser if we are not using a build system 
+       where babel would save pure JS files to be loaded by the browser instead -->
+    <script src="https://unpkg.com/@babel/standalone@7.22.10/babel.min.js"></script>
+  </head>
+  <body>
+    <h1>Welcome to the Server!</h1>
+    
+    <!-- Create an element that can be the root element of your react application -->
+    <div id="reactRootApp"></div>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Aliquam malesuada bibendum arcu vitae elementum. Ultrices neque ornare aenean euismod elementum nisi quis eleifend quam. Posuere morbi leo urna molestie at elementum eu facilisis. Diam sit amet nisl suscipit adipiscing bibendum. Volutpat sed cras ornare arcu dui. Nunc eget lorem dolor sed. Consequat id porta nibh venenatis cras sed felis eget. Rhoncus mattis rhoncus urna neque. Ornare quam viverra orci sagittis eu volutpat odio facilisis. Rhoncus mattis rhoncus urna neque viverra. Hac habitasse platea dictumst vestibulum.</p>
+    <!-- Load custom script with react component, using babel interpreter -->
+    <script type="text/babel">
+      "use strict";
+      // define a react page component using JSX
+      function DisplayList(projectData) {
+        console.log(projectData);
+        // return some output for the component
+        return (
+          <div>
+            <ol>
+              {
+                // use map() to loop thru array in projectData.list
+                projectData.list.map(
+                  // copy array's current value into iten and pass to arrow function
+                  // whenever we define a function inside a JSX expression, we have to use
+                  // use round parens instead of curlies to contain the function's code block
+                  (itemData,index) => (
+                    <li key={index}>
+                      <a href={itemData.link}>
+                        {itemData.firstname}
+                      </a>
+                    </li>
+                  )
+                )
+              }
+            </ol>
+          </div>
+        );
+      }
+
+      // use jQuery to load the JSON data from our server
+      $.getJSON(
+        'dataLocation', // url for jquery to ask for json from
+        function(getJSONToJquery) {
+          // after JSON loaded, call react createRoot() to find root HTML element for app
+          // creating a root React element
+          const reactRoot = ReactDOM.createRoot( document.getElementById( 'reactRootApp') );
+          // then call react render() to output JSX component into existing
+          reactRoot.render(
+            // gives visable user interface
+            <DisplayList list={getJSONToJquery} /> 
+          );
+        }
+      );
+    </script>
+  </body>
+</html>
